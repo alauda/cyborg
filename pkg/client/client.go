@@ -127,7 +127,10 @@ func (c *KubeClient) UpdateResource(resource *unstructured.Unstructured) (*unstr
 	return client.Resource(apiResource, resource.GetNamespace()).Update(resource)
 }
 
-func (c *KubeClient) GetResource(namespace, name string, options metav1.GetOptions) (*unstructured.Unstructured, error) {
+// GetResource get resource .
+// options: should contains TypeMeta
+// resourceType: if empty, use TypeMeta.kind to do discovery
+func (c *KubeClient) GetResource(namespace, name, resourceType string, options metav1.GetOptions) (*unstructured.Unstructured, error) {
 	gvk := schema.FromAPIVersionAndKind(options.APIVersion, options.Kind)
 	client, err := c.getClientByGVK(gvk)
 	if err != nil {
@@ -137,6 +140,13 @@ func (c *KubeClient) GetResource(namespace, name string, options metav1.GetOptio
 	ar, err := c.GetApiResourceByKind(gvk.Kind)
 	if err != nil {
 		return nil, err
+	}
+
+	if resourceType != "" {
+		ar, err = c.GetApiResourceByName(resourceType, options.APIVersion)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return client.Resource(ar, namespace).Get(name, options)

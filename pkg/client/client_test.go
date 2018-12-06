@@ -72,7 +72,7 @@ func TestPatch(t *testing.T) {
 	c, _ := NewKubeClient(getConfig(), "dev")
 	body := []byte(`{"metadata":{"labels":{"f":"1"}}}`)
 
-	result, err := c.GetResource("", "f9", metav1.GetOptions{
+	result, err := c.GetResource("", "f9", "", metav1.GetOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Namespace",
 			APIVersion: "v1",
@@ -113,9 +113,22 @@ func TestDelete(t *testing.T) {
 	check(t, err)
 }
 
+func TestGetSub(t *testing.T) {
+	c, _ := NewKubeClient(getConfig(), "dev")
+	result, err := c.GetResource("kube-system", "etcd-vm-16-12-ubuntu", "exec", metav1.GetOptions{
+		TypeMeta: metav1.TypeMeta{
+			Kind:       "Pod",
+			APIVersion: "v1",
+		},
+	})
+	check(t, err)
+	t.Logf("get exec result: %+v", result)
+
+}
+
 func TestGet(t *testing.T) {
 	c, _ := NewKubeClient(getConfig(), "dev")
-	result, err := c.GetResource("default", "kubernetes", metav1.GetOptions{
+	result, err := c.GetResource("default", "kubernetes", "", metav1.GetOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Service",
 			APIVersion: "v1",
@@ -124,7 +137,7 @@ func TestGet(t *testing.T) {
 	check(t, err)
 	fmt.Println(result)
 
-	_, err = c.GetResource("default", "kubernetes-not-exist", metav1.GetOptions{
+	_, err = c.GetResource("default", "kubernetes-not-exist", "", metav1.GetOptions{
 		TypeMeta: metav1.TypeMeta{
 			Kind:       "Service",
 			APIVersion: "v1",
