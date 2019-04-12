@@ -125,7 +125,7 @@ func (c *KubeClient) getApiResourceByKind(kind string) (*metav1.APIResource, err
 	for _, rl := range resources {
 		//TODO: test
 		for _, r := range rl.APIResources {
-			if r.Kind == kind && !IsSubResource(&r) {
+			if strings.EqualFold(r.Kind, kind) && !IsSubResource(&r) {
 				return &r, nil
 			}
 		}
