@@ -420,17 +420,13 @@ func (c *KubeClient) DynamicClientForResource(resource string, version string) (
 
 // DynamicClientForResource get dynamic client for resource
 func (c *KubeClient) DynamicClientForGroupKind(gk metav1.GroupKind) (dynamic.NamespaceableResourceInterface, error) {
-	version, err := c.GetVersionByGroup(gk.Group)
-	if err != nil {
-		return nil, err
-	}
 	resource, err := c.GetResourceTypeByGroupKind(gk)
 	if err != nil {
 		return nil, err
 	}
-	gv := schema.GroupVersion{
-		Group:   gk.Group,
-		Version: version,
+	gv, err := c.GetGroupVersionByName(resource, "")
+	if err != nil {
+		return nil, err
 	}
 	gvr := gv.WithResource(resource)
 	return c.ic.Resource(gvr), nil
