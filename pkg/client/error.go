@@ -1,8 +1,6 @@
 package client
 
-import (
-	"github.com/juju/errors"
-)
+import "errors"
 
 type ErrorResourceTypeNotFound struct {
 	message string
@@ -17,6 +15,5 @@ func (e ErrorResourceTypeNotFound) Error() string {
 }
 
 func IsResourceTypeNotFound(err error) bool {
-	_, ok := errors.Cause(err).(ErrorResourceTypeNotFound)
-	return ok
+	return errors.Unwrap(err).(*ErrorResourceTypeNotFound) != nil
 }

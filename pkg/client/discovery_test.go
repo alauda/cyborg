@@ -2,11 +2,13 @@ package client
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"reflect"
 	"testing"
 
-	"github.com/juju/errors"
+	"k8s.io/apimachinery/pkg/runtime/schema"
+
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
@@ -63,7 +65,7 @@ func TestGetByName(t *testing.T) {
 	r, err = c.GetApiResourceByName("service", "")
 	fmt.Println(err.Error())
 	if !IsResourceTypeNotFound(err) {
-		t.Errorf("Expect ErrorResourceTypeNotFind, got %s", reflect.TypeOf(errors.Cause(err)))
+		t.Errorf("Expect ErrorResourceTypeNotFind, got %s", reflect.TypeOf(errors.Unwrap(err)))
 	}
 }
 

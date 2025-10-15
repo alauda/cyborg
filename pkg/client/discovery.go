@@ -77,9 +77,7 @@ func (c *KubeClient) GetApiResourceList() ([]*metav1.APIResourceList, error) {
 func (c *KubeClient) GetResourceTypeByKind(kind string) (string, error) {
 	r, err := c.GetApiResourceByKind(kind)
 	if err != nil {
-		return "", errors.Trace(
-			ErrorResourceTypeNotFound{message: fmt.Sprintf("resource kind '%s' not found", kind)},
-		)
+		return "", ErrorResourceTypeNotFound{message: fmt.Sprintf("resource kind '%s' not found", kind)}
 	}
 	return r.Name, nil
 }
@@ -89,9 +87,7 @@ func (c *KubeClient) GetResourceTypeByKind(kind string) (string, error) {
 func (c *KubeClient) GetResourceTypeByGroupKind(gk metav1.GroupKind) (string, error) {
 	r, err := c.GetApiResourceByGroupKind(gk)
 	if err != nil {
-		return "", errors.Trace(
-			ErrorResourceTypeNotFound{message: fmt.Sprintf("resource kind '%s/%s' not found", gk.Group, gk.Kind)},
-		)
+		return "", ErrorResourceTypeNotFound{message: fmt.Sprintf("resource kind '%s/%s' not found", gk.Group, gk.Kind)}
 	}
 	return r.Name, nil
 }
@@ -162,9 +158,9 @@ func (c *KubeClient) GetApiResourceByKindInsensitive(kind string) (*metav1.APIRe
 func (c *KubeClient) getApiResourceByKind(kind string, ignoreCase bool) (*metav1.APIResource, error) {
 	resources, err := c.GetApiResourceList()
 	if err != nil {
-		return nil, errors.Trace(ErrorResourceTypeNotFound{
+		return nil, ErrorResourceTypeNotFound{
 			message: fmt.Sprintf("find apiResource for kind error: %s %s", c.cluster, kind),
-		})
+		}
 	}
 
 	for _, rl := range resources {
@@ -177,18 +173,18 @@ func (c *KubeClient) getApiResourceByKind(kind string, ignoreCase bool) (*metav1
 			}
 		}
 	}
-	return nil, errors.Trace(ErrorResourceTypeNotFound{
+	return nil, ErrorResourceTypeNotFound{
 		message: fmt.Sprintf("find apiResource for kind error: %s %s", c.cluster, kind),
-	})
+	}
 }
 
 // getApiResourceByGroupKind gets the APIResource by the resource GroupKind， skip sub resources
 func (c *KubeClient) getApiResourceByGroupKind(gk metav1.GroupKind, ignoreCase bool) (*metav1.APIResource, error) {
 	resources, err := c.GetApiResourceList()
 	if err != nil {
-		return nil, errors.Trace(ErrorResourceTypeNotFound{
+		return nil, ErrorResourceTypeNotFound{
 			message: fmt.Sprintf("find apiResource for kind error: %s %s/%s", c.cluster, gk.Group, gk.Kind),
-		})
+		}
 	}
 
 	for _, rl := range resources {
@@ -201,9 +197,9 @@ func (c *KubeClient) getApiResourceByGroupKind(gk metav1.GroupKind, ignoreCase b
 			}
 		}
 	}
-	return nil, errors.Trace(ErrorResourceTypeNotFound{
+	return nil, ErrorResourceTypeNotFound{
 		message: fmt.Sprintf("find apiResource for kind error: %s %s/%s", c.cluster, gk.Group, gk.Kind),
-	})
+	}
 }
 
 // GetApiResourceByName gets APIResource by the resource type name and
