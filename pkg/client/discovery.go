@@ -5,7 +5,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/juju/errors"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -210,7 +209,7 @@ func (c *KubeClient) GetApiResourceByName(name, preferredVersion string) (*metav
 	getFunc := func() error {
 		resources, err := c.GetApiResourceList()
 		if err != nil {
-			return errors.Trace(NewTypeNotFoundError(fmt.Sprintf("find apiResource for name error: %s %s", c.cluster, name)))
+			return NewTypeNotFoundError(fmt.Sprintf("find apiResource for name error: %s %s", c.cluster, name))
 		}
 
 		for _, rl := range resources {
@@ -222,7 +221,7 @@ func (c *KubeClient) GetApiResourceByName(name, preferredVersion string) (*metav
 		}
 
 		if len(cans) == 0 {
-			return errors.Trace(NewTypeNotFoundError(fmt.Sprintf("find apiResource for name error: %s %s", c.cluster, name)))
+			return NewTypeNotFoundError(fmt.Sprintf("find apiResource for name error: %s %s", c.cluster, name))
 		}
 		return nil
 	}
@@ -282,7 +281,7 @@ func (c *KubeClient) getVersionByGroup(group string) (string, error) {
 		}
 	}
 
-	return "", errors.Trace(NewTypeNotFoundError(fmt.Sprintf("find version for group error: %s %s", c.cluster, group)))
+	return "", NewTypeNotFoundError(fmt.Sprintf("find version for group error: %s %s", c.cluster, group))
 }
 
 // GetGroupVersionByName gets the group version of a resource by it's type name and
