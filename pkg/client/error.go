@@ -15,5 +15,18 @@ func (e ErrorResourceTypeNotFound) Error() string {
 }
 
 func IsResourceTypeNotFound(err error) bool {
-	return errors.Unwrap(err).(*ErrorResourceTypeNotFound) != nil
+	if err == nil {
+		return false
+	}
+	if _, ok := err.(ErrorResourceTypeNotFound); ok {
+		return true
+	} else {
+		unwrapErr := errors.Unwrap(err)
+		if unwrapErr == nil {
+			return false
+		} else if _, ok := unwrapErr.(ErrorResourceTypeNotFound); ok {
+			return true
+		}
+	}
+	return false
 }
