@@ -15,19 +15,5 @@ func (e ErrorResourceTypeNotFound) Error() string {
 }
 
 func IsResourceTypeNotFound(err error) bool {
-	if err == nil {
-		return false
-	}
-	_, ok := Cause(err).(ErrorResourceTypeNotFound)
-	return ok
-}
-
-func Cause(err error) error {
-	for {
-		unwrapped := errors.Unwrap(err)
-		if unwrapped == nil {
-			return err
-		}
-		err = unwrapped
-	}
+	return errors.As(err, &ErrorResourceTypeNotFound{})
 }
