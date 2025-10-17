@@ -18,15 +18,16 @@ func IsResourceTypeNotFound(err error) bool {
 	if err == nil {
 		return false
 	}
-	if _, ok := err.(ErrorResourceTypeNotFound); ok {
-		return true
-	} else {
-		unwrapErr := errors.Unwrap(err)
-		if unwrapErr == nil {
-			return false
-		} else if _, ok := unwrapErr.(ErrorResourceTypeNotFound); ok {
-			return true
+	_, ok := Cause(err).(ErrorResourceTypeNotFound)
+	return ok
+}
+
+func Cause(err error) error {
+	for {
+		unwrapped := errors.Unwrap(err)
+		if unwrapped == nil {
+			return err
 		}
+		err = unwrapped
 	}
-	return false
 }
